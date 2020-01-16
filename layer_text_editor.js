@@ -1,29 +1,42 @@
 
-var docPath = File($.fileName).parent.fsName;
-
+var docPath;
+var fileName;
 var file = new File();
 var arr_temp = new Array();
 var result = new Array(new Array());
 
-var count = 0; // for image name
+
+run();
+
 
 function run(){
+	init();
 	load_data();
-	delimite_array(arr_temp, ',');
 	changeText();
-	alert("done");
+	alert("Complete\n(" + docPath + "/)");
+}
+
+
+
+function init(){
+	docPath = File($.fileName).parent.fsName;
+	fileName =prompt("Input file name (without .psd)", "untitled-1");
 }
 
 function load_data(){
 	file = load_data_psd();
-	arr_temp = load_data_csv();
+	delimite_array(load_data_csv(), ',');
 
 }
 
-
 function load_data_psd(){
-	var psdFile = new File(docPath + "/test_canvas.psd");
-	return app.open(psdFile);
+	try{
+		var psdFile = new File(docPath + "/" + fileName + ".psd");
+		return app.open(psdFile);
+	}
+	catch(e){
+		alert("Fail to load the psd file.\n" + e);
+	}
 }
 
 function load_data_csv(){
@@ -37,19 +50,18 @@ function load_data_csv(){
 	}
 
 	csvFile.close();
-
-
 	return arr;
 }
 
 
-function delimite_array(arr, delimiter){ //WIP
-	//var result = new Array(new Array());
+function delimite_array(arr, delimiter){
+
 	var flag = false;
 	var length = arr.length;
 	var character;
 	var str;
 	var arr_temp = new Array();
+
 	for(var i = 0; i < arr.length; i++){
 
 		flag = false;
@@ -61,7 +73,7 @@ function delimite_array(arr, delimiter){ //WIP
 			if(character==undefined){
 				break;
 			}
-			else if(character=='"'){ // 정수 내 콤마표시 피하기 위한 flag 처리
+			else if(character=='"'){ // 숫자 내 콤마표시가 구분자로 쓰이지 않도록 flag 처리
 				flag = (flag)?false:true;
 				continue;
 			}
@@ -86,8 +98,7 @@ function changeText(){
 			var text = result[layer][i];
 			applyTextLayer(file, layerName, text);
 		}
-		saveImage();
-		count += 1;
+		saveImage(result[0][i]);
 	}
 
 
@@ -107,19 +118,12 @@ function applyTextLayer(file, layerName, text) {
     	}
 
       }
-    } else {
-      //changeTextLayerContent(layerRef, layerName, newTextString);
     }
   }
+
 }
 
-function saveImage(){
-	var image = new File(docPath + "test_canvas" + count + ".png");
+function saveImage(addname){
+	var image = new File(docPath + "/" + fileName + "_" + addname + ".png");
 	activeDocument.saveAs(image, PNGSaveOptions, true, Extension.NONE);
 }
-
-run();
-
-
-
-//app.displayDialogs = DialogModes.NO;
