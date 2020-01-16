@@ -41,38 +41,37 @@ function load_data_csv(){
 }
 
 
-function delimite_array(arr, delimiter){
+function delimite_array(arr, delimiter){ //WIP
 	var result = new Array(new Array());
 	var flag = false;
 	var length = arr.length;
 	var character;
 	var str;
+	var arr_temp = new Array();
 	for(var i = 1; i <= arr.length-1; i++){
+	//for(var i = 1; i <= 1; i++){ //for test
 		flag = false;
 		str = "";
-
 		for(var j = 0; j <= arr[i].length-1; j++){
-			character = arr[j];
+			character = arr[i].charAt(j);
+			//alert("Character : " + character)
 			if(character==undefined){ // 파일 끝
 				break;
 			}
 			else if(character=='"'){ // 정수 내 콤마표시 피하기 위한 flag 처리
-				alert("There is ''")
 				flag = (flag)?false:true;
 				continue;
 			}
-			else if(!flag){
-				if(character==delimiter){ // 구분자
-					alert("push str : " + str);
-					result[i].push(str);
-					str = "";
-				} else{ // 문자열에 문자 추가
-					str += character;
-				}
+			
+			if(!flag && character==delimiter){ // 구분자
+				alert("push str : " + str);
+				arr_temp.push(str);
+				str = "";
+			} else{ // 문자열에 문자 추가
+				str += character;
 			}
 		}
-
-
+		result[i] = arr_temp;
 	}
 
 }
