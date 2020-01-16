@@ -92,6 +92,7 @@ function delimite_array(arr, delimiter){
 }
 
 function changeText(){
+
 	for(var i= 1; i < result[0].length; i++){ // 이미지
 		for(var layer = 1; layer < result.length; layer++){ // 레이어
 			var layerName = result[layer][0];
@@ -101,24 +102,24 @@ function changeText(){
 		saveImage(result[0][i]);
 	}
 
-
 }
 
 function applyTextLayer(file, layerName, text) {
   for (var i = 0, max = file.layers.length; i < max; i++) {
 
-    var layerRef = file.layers[i];
-    if (layerRef.typename === "ArtLayer") {
-      if (layerRef.name === layerName && layerRef.kind === LayerKind.TEXT) {
+    var layer = file.layers[i];
+    
+    if (layer.typename === "ArtLayer") {
+      if (layer.name === layerName && layer.kind === LayerKind.TEXT) {
     	try{
-    		layerRef.textItem.contents = text;
+    		layer.textItem.contents = text;
     	}
     	catch(e){
     		
     	}
-
       }
     }
+
   }
 
 }
