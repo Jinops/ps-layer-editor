@@ -9,10 +9,9 @@ How to use
 
 2. Edit layer_text_input.csv
 
-  First column : Layer name
-  The other columns : Text that you want to change to
-
-  Except for the first one, each column means one image.
+ - First column : Layer name
+ - The other columns : Text that you want to change to
+ - Except for the first one, each column means one image.
 
 3. Launch Photoshop - (Menu) File - Scripts - Browse - open "layer_text_editor.js"
 
