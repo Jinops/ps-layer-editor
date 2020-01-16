@@ -5,11 +5,13 @@ var file = new File();
 var arr_temp = new Array();
 var result = new Array(new Array());
 
+var count = 0; // for image name
+
 function run(){
 	load_data();
-	changeTextLayerContent(file, 'T1', arr_temp[0]);
-	//saveImage();
 	delimite_array(arr_temp, ',');
+	changeText();
+	alert("done");
 }
 
 function load_data(){
@@ -42,20 +44,21 @@ function load_data_csv(){
 
 
 function delimite_array(arr, delimiter){ //WIP
-	var result = new Array(new Array());
+	//var result = new Array(new Array());
 	var flag = false;
 	var length = arr.length;
 	var character;
 	var str;
 	var arr_temp = new Array();
-	for(var i = 1; i <= arr.length-1; i++){
-	//for(var i = 1; i <= 1; i++){ //for test
+	for(var i = 0; i < arr.length; i++){
+
 		flag = false;
 		str = "";
-		for(var j = 0; j <= arr[i].length-1; j++){
+		arr_temp = new Array();
+
+		for(var j = 0; j < arr[i].length; j++){
 			character = arr[i].charAt(j);
-			//alert("Character : " + character)
-			if(character==undefined){ // 파일 끝
+			if(character==undefined){
 				break;
 			}
 			else if(character=='"'){ // 정수 내 콤마표시 피하기 위한 flag 처리
@@ -63,27 +66,46 @@ function delimite_array(arr, delimiter){ //WIP
 				continue;
 			}
 			
-			if(!flag && character==delimiter){ // 구분자
-				alert("push str : " + str);
+			if(!flag && character==delimiter){ // 구분자 체크
 				arr_temp.push(str);
 				str = "";
-			} else{ // 문자열에 문자 추가
+			} else{
 				str += character;
 			}
 		}
+
+		arr_temp.push(str);
 		result[i] = arr_temp;
 	}
+}
+
+function changeText(){
+	for(var i= 1; i < result[0].length; i++){ // 이미지
+		for(var layer = 1; layer < result.length; layer++){ // 레이어
+			var layerName = result[layer][0];
+			var text = result[layer][i];
+			applyTextLayer(file, layerName, text);
+		}
+		saveImage();
+		count += 1;
+	}
+
 
 }
 
-
-function changeTextLayerContent(file, layerName, text) {
+function applyTextLayer(file, layerName, text) {
   for (var i = 0, max = file.layers.length; i < max; i++) {
 
     var layerRef = file.layers[i];
     if (layerRef.typename === "ArtLayer") {
       if (layerRef.name === layerName && layerRef.kind === LayerKind.TEXT) {
-        layerRef.textItem.contents = text;
+    	try{
+    		layerRef.textItem.contents = text;
+    	}
+    	catch(e){
+    		
+    	}
+
       }
     } else {
       //changeTextLayerContent(layerRef, layerName, newTextString);
@@ -92,7 +114,7 @@ function changeTextLayerContent(file, layerName, text) {
 }
 
 function saveImage(){
-	var image = new File(docPath + "test_canvas.png");
+	var image = new File(docPath + "test_canvas" + count + ".png");
 	activeDocument.saveAs(image, PNGSaveOptions, true, Extension.NONE);
 }
 
