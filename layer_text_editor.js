@@ -1,15 +1,16 @@
 
-var fileRef = new File('/Users/jinwoop/Documents/automate-job/ps-layer-editor/test_canvas.psd');
-var docRef = app.open(fileRef);
-alert("File laod complete");
+docPath = File($.fileName).parent.fsName;
 
-function changeTextLayerContent(doc, layerName, newTextString) {
-  for (var i = 0, max = doc.layers.length; i < max; i++) {
+var filePath = new File(docPath + "/test_canvas.psd");
+var file = app.open(filePath);
 
-    var layerRef = doc.layers[i];
+function changeTextLayerContent(file, layerName, text) {
+  for (var i = 0, max = file.layers.length; i < max; i++) {
+
+    var layerRef = file.layers[i];
     if (layerRef.typename === "ArtLayer") {
       if (layerRef.name === layerName && layerRef.kind === LayerKind.TEXT) {
-        layerRef.textItem.contents = newTextString;
+        layerRef.textItem.contents = text;
       }
     } else {
       //changeTextLayerContent(layerRef, layerName, newTextString);
@@ -17,6 +18,11 @@ function changeTextLayerContent(doc, layerName, newTextString) {
   }
 }
 
-changeTextLayerContent(docRef, 'T1', 'Albert');
-changeTextLayerContent(docRef, 'T2', 'Eric');
-changeTextLayerContent(docRef, 'T3', 'Bounce');
+changeTextLayerContent(file, 'T1', 'coll');
+changeTextLayerContent(file, 'T2', 'name');
+changeTextLayerContent(file, 'T3', 'Bounce');
+
+var image = new File(docPath + "test_canvas.png");
+activeDocument.saveAs(image, PNGSaveOptions, true, Extension.NONE);
+
+//app.displayDialogs = DialogModes.NO;
