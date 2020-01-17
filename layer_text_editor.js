@@ -1,10 +1,12 @@
-
 var docPath;
 var fileName;
 var file = new File();
 var arr_temp = new Array();
 var result = new Array(new Array());
 
+var exportOptions = new ExportOptionsSaveForWeb();
+exportOptions.format = SaveDocumentType.PNG;
+exportOptions.PNG8 = false;
 
 run();
 
@@ -97,34 +99,55 @@ function changeText(){
 		for(var layer = 1; layer < result.length; layer++){ // 레이어
 			var layerName = result[layer][0];
 			var text = result[layer][i];
-			applyTextLayer(file, layerName, text);
+			applyTextLayer(file.layers, layerName, text);
+			//applyTextLayerGroup(file.layerSets, layerName, text);
 		}
 		saveImage(result[0][i]);
 	}
 
 }
 
-function applyTextLayer(file, layerName, text) {
-  for (var i = 0, max = file.layers.length; i < max; i++) {
+function applyTextLayer(layers, layerName, text) {
 
-    var layer = file.layers[i];
-    
-    if (layer.typename === "ArtLayer") {
-      if (layer.name === layerName && layer.kind === LayerKind.TEXT) {
-    	try{
-    		layer.textItem.contents = text;
-    	}
-    	catch(e){
-    		
-    	}
-      }
+
+  	for (var i = 0, max = file.layers.length; i < max; i++) {
+	  	var layer = layers[i];
+
+		alert(layers + " + " + layer + " + " + layer.name + " + " + text);
+
+	  	// if (layer.typename == "LayerSet" && layer.name != layerName){
+	  	// 	applyTextLayer(layer, layerName, text);
+	  	// }
+	    if (layer.typename == "ArtLayer") {
+	      if (layer.name == layerName && layer.kind == LayerKind.TEXT) {
+	    	try{
+	    		layer.textItem.contents = text;
+	    	}
+	    	catch(e){
+	    		
+	    	}
+	      }
     }
 
+    
   }
 
 }
 
+function applyTextLayerGroup(layerSets, layerName, text){
+	for(var i = 0; i < layerSets.length; i++){
+		alert(i + " : " + layerSets.getBy);
+		if(layerSets[i][0].length > 1){
+			applyTextLayerGroup(layerSets[i], layerName, text);
+		}else{
+			//applyTextLayer(layerSets[i], layerName, text);
+		}
+	}
+ 
+}
+
 function saveImage(addname){
+	activeDocument.info = null;
 	var image = new File(docPath + "/" + fileName + "_" + addname + ".png");
-	activeDocument.saveAs(image, PNGSaveOptions, true, Extension.NONE);
+	activeDocument.exportDocument(image, ExportType.SAVEFORWEB, exportOptions);
 }
